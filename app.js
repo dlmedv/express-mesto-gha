@@ -21,11 +21,9 @@ app.use(express.json());
 app.use(usersRouter);
 app.use(cardsRouter);
 
-app.use = (req, res) => {
-  res.status(NOT_FOUND).send({
-    message: 'По этому адресу ничего нет',
-  });
-};
+app.use = (req, res) => res.status(NOT_FOUND).send({
+  message: 'По этому адресу ничего нет',
+});
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
