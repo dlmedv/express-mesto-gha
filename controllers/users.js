@@ -5,7 +5,9 @@ const getUsers = (req, res) => {
   userModel.find({}).then((users) => res.send(users))
     .catch((err) => {
       res.status(INTERNAL_SERVER_ERROR).send({
-        message: err.message,
+        message: 'На сервере произошла ошибка',
+        err: err.message,
+        stack: err.stack,
       });
     });
 };
@@ -24,7 +26,9 @@ const getUserById = (req, res) => {
         });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({
-        message: err.message,
+        message: 'На сервере произошла ошибка',
+        err: err.message,
+        stack: err.stack,
       });
     });
 };
@@ -39,7 +43,9 @@ const createUser = (req, res) => {
         });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({
-        message: err.message,
+        message: 'На сервере произошла ошибка',
+        err: err.message,
+        stack: err.stack,
       });
     });
 };
@@ -59,7 +65,9 @@ const updateAvatar = (req, res) => {
         });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({
-        message: err.message,
+        message: 'На сервере произошла ошибка',
+        err: err.message,
+        stack: err.stack,
       });
     });
 };
@@ -79,7 +87,9 @@ const updateUser = (req, res) => {
         });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({
-        message: err.message,
+        message: 'На сервере произошла ошибка',
+        err: err.message,
+        stack: err.stack,
       });
     });
 };

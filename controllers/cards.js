@@ -5,7 +5,9 @@ const getCards = (req, res) => {
   cardsModel.find({}).then((cards) => res.send(cards))
     .catch((err) => {
       res.status(INTERNAL_SERVER_ERROR).send({
-        message: err.message,
+        message: 'На сервере произошла ошибка',
+        err: err.message,
+        stack: err.stack,
       });
     });
 };
@@ -21,7 +23,9 @@ const createCard = (req, res) => {
         });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({
-        message: err.message,
+        message: 'На сервере произошла ошибка',
+        err: err.message,
+        stack: err.stack,
       });
     });
 };
@@ -40,7 +44,9 @@ const deleteCard = (req, res) => {
         });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({
-        message: err.message,
+        message: 'На сервере произошла ошибка',
+        err: err.message,
+        stack: err.stack,
       });
     });
 };
@@ -65,7 +71,9 @@ const putLikes = (req, res) => {
         });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({
-        message: err.message,
+        message: 'На сервере произошла ошибка',
+        err: err.message,
+        stack: err.stack,
       });
     });
 };
@@ -90,7 +98,9 @@ const deleteLike = (req, res) => {
         });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({
-        message: err.message,
+        message: 'На сервере произошла ошибка',
+        err: err.message,
+        stack: err.stack,
       });
     });
 };
