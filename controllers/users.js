@@ -48,7 +48,8 @@ const updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
   userModel.findByIdAndUpdate(req.user._id, { avatar }, {
-    new: true, // обработчик then получит на вход обновлённую запись
+    new: true,
+    runValidators: true, // обработчик then получит на вход обновлённую запись
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((avatarUser) => res.send({ data: avatarUser }))
@@ -68,7 +69,8 @@ const updateUser = (req, res) => {
   const { name, about } = req.body;
 
   userModel.findByIdAndUpdate(req.user._id, { name, about }, {
-    new: true, // обработчик then получит на вход обновлённую запись
+    new: true,
+    runValidators: true, // обработчик then получит на вход обновлённую запись
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((user) => res.send({ data: user }))
