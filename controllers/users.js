@@ -51,8 +51,7 @@ const updateAvatar = (req, res) => {
     new: true,
     runValidators: true,
   })
-    .orFail()
-    .then((avatarUser) => res.send({ data: avatarUser }))
+    .then((avatarUser) => res.send(avatarUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({
@@ -70,10 +69,9 @@ const updateUser = (req, res) => {
 
   userModel.findByIdAndUpdate(req.user._id, { name, about }, {
     new: true,
-    runValidators: true, // обработчик then получит на вход обновлённую запись
+    runValidators: true,
   })
-    .orFail()
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({
