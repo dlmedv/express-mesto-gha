@@ -11,7 +11,7 @@ const getUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-  userModel.findById(req.params.userId).then((user) => res.send(user))
+  userModel.findById(req.params.userId).orFail().then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         return res.status(NOT_FOUND).send({

@@ -27,7 +27,7 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  cardsModel.findByIdAndRemove(req.params.cardId).then((card) => res.send(card))
+  cardsModel.findByIdAndRemove(req.params.cardId).orFail().then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         return res.status(NOT_FOUND).send({
@@ -51,6 +51,7 @@ const putLikes = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
+    .orFail()
     .then((like) => res.send(like))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
@@ -75,6 +76,7 @@ const deleteLike = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
+    .orFail()
     .then((like) => res.send(like))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
