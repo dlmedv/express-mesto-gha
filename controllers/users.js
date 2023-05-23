@@ -51,6 +51,7 @@ const updateAvatar = (req, res) => {
     new: true,
     runValidators: true,
   })
+    .orFail()
     .then((avatarUser) => res.send({ data: avatarUser }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -71,6 +72,7 @@ const updateUser = (req, res) => {
     new: true,
     runValidators: true, // обработчик then получит на вход обновлённую запись
   })
+    .orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
