@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { NOT_FOUND } = require('./utils/errors');
@@ -15,7 +16,7 @@ app.use((req, res, next) => {
 
   next();
 });
-
+app.use(helmet());
 app.use(express.json());
 
 app.use(usersRouter);
