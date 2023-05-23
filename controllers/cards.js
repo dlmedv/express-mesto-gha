@@ -5,7 +5,7 @@ const getCards = (req, res) => {
   cardsModel.find({}).then((cards) => res.send(cards))
     .catch((err) => {
       res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Внутренняя ошибка сервера',
+        message: err.message,
       });
     });
 };
@@ -19,11 +19,10 @@ const createCard = (req, res) => {
         return res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
-      } else {
-        return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Внутренняя ошибка сервера',
-        });
       }
+      return res.status(INTERNAL_SERVER_ERROR).send({
+        message: err.message,
+      });
     });
 };
 
@@ -39,11 +38,10 @@ const deleteCard = (req, res) => {
         return res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
-      } else {
-        return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Внутренняя ошибка сервера',
-        });
       }
+      return res.status(INTERNAL_SERVER_ERROR).send({
+        message: err.message,
+      });
     });
 };
 
@@ -64,11 +62,10 @@ const putLikes = (req, res) => {
         return res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
-      } else {
-        return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Внутренняя ошибка сервера',
-        });
       }
+      return res.status(INTERNAL_SERVER_ERROR).send({
+        message: err.message,
+      });
     });
 };
 
@@ -89,11 +86,10 @@ const deleteLike = (req, res) => {
         return res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
-      } else {
-        return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Внутренняя ошибка сервера',
-        });
       }
+      return res.status(INTERNAL_SERVER_ERROR).send({
+        message: err.message,
+      });
     });
 };
 

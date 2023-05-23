@@ -5,7 +5,7 @@ const getUsers = (req, res) => {
   userModel.find({}).then((users) => res.send(users))
     .catch((err) => {
       res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Внутренняя ошибка сервера',
+        message: err.message,
       });
     });
 };
@@ -22,11 +22,10 @@ const getUserById = (req, res) => {
         return res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
-      } else {
-        return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Внутренняя ошибка сервера',
-        });
       }
+      return res.status(INTERNAL_SERVER_ERROR).send({
+        message: err.message,
+      });
     });
 };
 
@@ -38,11 +37,10 @@ const createUser = (req, res) => {
         return res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
-      } else {
-        return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Внутренняя ошибка сервера',
-        });
       }
+      return res.status(INTERNAL_SERVER_ERROR).send({
+        message: err.message,
+      });
     });
 };
 
@@ -59,11 +57,10 @@ const updateAvatar = (req, res) => {
         return res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
-      } else {
-        return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Внутренняя ошибка сервера',
-        });
       }
+      return res.status(INTERNAL_SERVER_ERROR).send({
+        message: err.message,
+      });
     });
 };
 
@@ -80,11 +77,10 @@ const updateUser = (req, res) => {
         return res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные',
         });
-      } else {
-        return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Внутренняя ошибка сервера',
-        });
       }
+      return res.status(INTERNAL_SERVER_ERROR).send({
+        message: err.message,
+      });
     });
 };
 
