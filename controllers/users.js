@@ -1,4 +1,3 @@
-const { isValidObjectId } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const userModel = require('../models/user');
 const Conflict = require('../errors/Conflict');
@@ -14,37 +13,23 @@ const getUsers = (req, res, next) => {
 };
 
 const getUserById = (req, res, next) => {
-  const { userId } = req.params;
-
-  if (!isValidObjectId(userId)) {
-    throw new BadRequest('Переданы некорректные данные');
-  }
-
-  userModel.findById(userId)
-    .orFail()
+  userModel.findById(req.params.userId)
+    .orFail(() => {
+      throw new NotFound('Пользователь не найден');
+    })
     .then((user) => res.status(200).send(user))
     .catch(next);
 };
 
 const getMyUser = (req, res, next) => {
-  let userId;
-
-  if (req.params.id) {
-    userId = req.params.id;
-  } else {
-    userId = req.user._id;
-  }
-
-  if (!isValidObjectId(userId)) {
-    throw new BadRequest('Переданы некорректные данные');
-  }
-
-  userModel.findById(userId)
-    .orFail()
+  userModel.findById(req.user._id)
+    .orFail(() => {
+      throw new NotFound('Пользователь не найден');
+    })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        next(new NotFound('Пользователь с данным "_id" не найден'));
+        next(new BadRequest('Пользователь с данным "_id" не найден'));
       }
       next(err);
     });
@@ -88,7 +73,7 @@ const loginUser = (req, res, next) => {
 
       const token = jwtAuth.signToken({ _id: user._id });
 
-      res.status(200).send({ token });
+      return res.status(200).send({ token });
     })
     .catch(next);
 };
