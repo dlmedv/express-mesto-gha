@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs');
-const { isValidObjectId } = require('mongoose');
 const userModel = require('../models/user');
 const Conflict = require('../errors/Conflict');
 const NotFound = require('../errors/NotFound');
@@ -20,7 +19,7 @@ const getUserById = (req, res, next) => {
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
+      if (err.name === 'CastError') {
         next(new BadRequest('Пользователь с данным "_id" не найден'));
       }
       next(err);
@@ -28,22 +27,13 @@ const getUserById = (req, res, next) => {
 };
 
 const getMyUser = (req, res, next) => {
-  let userId;
-
-  if (req.params.id) {
-    userId = req.params.id;
-  } else {
-    userId = req.user._id;
-  }
-
-  if (!isValidObjectId(userId)) {
-    throw new BadRequest('Переданы некорректные данные для получения данных пользователя');
-  }
-  userModel.findById(userId)
-    .orFail()
+  userModel.findById(req.user._id)
+    .orFail(() => {
+      throw new NotFound('Пользователь не найден');
+    })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
+      if (err.name === 'CastError') {
         next(new BadRequest('Пользователь с данным "_id" не найден'));
       }
       next(err);
