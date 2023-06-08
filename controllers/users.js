@@ -14,18 +14,17 @@ const getUsers = (req, res, next) => {
 };
 
 const getUserById = (req, res, next) => {
-  const { userId } = req.params;
-
-  if (!isValidObjectId(userId)) {
-    throw new BadRequest('Переданы некорректные данные для получения данных пользователя');
-  }
-
-  userModel.findById(userId)
+  userModel.findById(req.params.userId)
     .orFail(() => {
       throw new NotFound('Пользователь не найден');
     })
     .then((user) => res.status(200).send(user))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'DocumentNotFoundError') {
+        next(new BadRequest('Пользователь с данным "_id" не найден'));
+      }
+      next(err);
+    });
 };
 
 const getMyUser = (req, res, next) => {
