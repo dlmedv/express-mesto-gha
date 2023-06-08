@@ -18,6 +18,12 @@ const validateSignUp = celebrate({
   }),
 });
 
+const validateGetUser = celebrate({
+  params: Joi.object().keys({
+    userId: Joi.object(),
+  }),
+});
+
 const validateUserAvatar = celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().pattern(urlPattern),
@@ -65,4 +71,5 @@ module.exports = {
   validateDeleteCard,
   validateLikeCard,
   validateRemoveLikeCard,
+  validateGetUser,
 };
