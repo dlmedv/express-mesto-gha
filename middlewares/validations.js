@@ -63,7 +63,7 @@ const validateRemoveLikeCard = celebrate({
 
 const validationUserId = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().alphanum().hex().length(24),
+    userId: Joi.string().alphanum().hex().length(24),
   }),
 });
 
