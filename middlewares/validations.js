@@ -61,6 +61,12 @@ const validateRemoveLikeCard = celebrate({
   }),
 });
 
+const validationUserId = celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().alphanum().hex().length(24),
+  }),
+});
+
 module.exports = {
   validateSignIn,
   validateSignUp,
@@ -71,4 +77,5 @@ module.exports = {
   validateLikeCard,
   validateRemoveLikeCard,
   validateGetUser,
+  validationUserId,
 };
