@@ -1,4 +1,3 @@
-const { isValidObjectId } = require('mongoose');
 const cardsModel = require('../models/card');
 const Forbidden = require('../errors/Forbidden');
 const BadRequest = require('../errors/Conflict');
@@ -23,31 +22,23 @@ const createCard = (req, res, next) => {
 
 // eslint-disable-next-line consistent-return
 const deleteCard = (req, res, next) => {
-  const { cardId } = req.params;
-  const { _id: userId } = req.user;
-
-  if (!isValidObjectId(cardId)) {
-    throw new BadRequest('Переданы некорректные данные');
-  }
-  cardsModel.findById(cardId)
-    .orFail()
-    .then((card) => {
-      if (!card.owner.equals(userId)) {
-        throw new Forbidden('Вы не можете удалить данную карточку');
-      }
-      cardsModel.deleteOne({ _id: cardId });
+  cardsModel.findById(req.params.cardId)
+    .orFail(() => {
+      throw new NotFound('Такой карточки не существует');
     })
-    .then(({ deletedCount }) => {
-      if (!deletedCount) {
-        throw new Error('Серверная ошибка');
+    .then((card) => {
+      if (card.owner.toString() !== req.user._id) {
+        throw new Forbidden('Вы не можете удалить чужую карточку');
       }
-      return res.status(200).send({ message: 'Карточка удалена' });
+      cardsModel.findByIdAndRemove(req.params.cardId)
+        .then(() => res.send({ message: 'Пост удалён' }))
+        .catch(next);
     })
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        next(new NotFound('Карточка не найдена'));
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return next(new BadRequest('Введены некорректные данные'));
       }
-      next(err);
+      return next(err);
     });
 };
 
