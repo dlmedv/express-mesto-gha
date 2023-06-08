@@ -45,19 +45,19 @@ const validateCreateCard = celebrate({
 
 const validateDeleteCard = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.object().required(),
+    cardId: Joi.string().alphanum().hex().length(24),
   }),
 });
 
 const validateLikeCard = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.object().required(),
+    cardId: Joi.string().alphanum().hex().length(24),
   }),
 });
 
 const validateRemoveLikeCard = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.object().required(),
+    cardId: Joi.string().alphanum().hex().length(24),
   }),
 });
 
