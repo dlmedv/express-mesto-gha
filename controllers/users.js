@@ -44,9 +44,9 @@ const getMyUser = (req, res, next) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        return next(new NotFound('Пользователь с данным "_id" не найден'));
+        next(new NotFound('Пользователь с данным "_id" не найден'));
       }
-      return next(err);
+      next(err);
     });
 };
 
@@ -61,18 +61,18 @@ const createUser = (req, res, next) => {
     }).then((user) => res.status(201).send(user))
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          return next(new BadRequest('Переданы некорректные данные'));
-        } if (err.code === 11000) {
-          return next(new Conflict('Пользователь с таким Email уже существует'));
+          next(new BadRequest('Переданы некорректные данные'));
+        } else if (err.code === 11000) {
+          next(new Conflict('Пользователь с таким Email уже существует'));
         }
-        return next(new Error(err.message));
+        next(new Error(err.message));
       });
   });
 };
 
 const loginUser = (req, res, next) => {
   const { email, password } = req.body;
-  userModel.findOne({ email }).orFail()
+  userModel.findOne({ email })
     .select('+password')
     .then((user) => {
       if (!user) {
@@ -103,9 +103,9 @@ const updateAvatar = (req, res, next) => {
     .then((avatarUser) => res.send(avatarUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequest('Переданы некорректные данные'));
+        next(new BadRequest('Переданы некорректные данные'));
       }
-      return next(new Error(err.message));
+      next(new Error(err.message));
     });
 };
 
@@ -119,9 +119,9 @@ const updateUser = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequest('Переданы некорректные данные'));
+        next(new BadRequest('Переданы некорректные данные'));
       }
-      return next(new Error(err.message));
+      next(new Error(err.message));
     });
 };
 

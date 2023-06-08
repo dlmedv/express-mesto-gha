@@ -15,9 +15,9 @@ const createCard = (req, res, next) => {
     .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequest('Переданы некорректные данные'));
+        next(new BadRequest('Переданы некорректные данные'));
       }
-      return next(new Error(err.message));
+      next(new Error(err.message));
     });
 };
 
@@ -35,7 +35,7 @@ const deleteCard = (req, res, next) => {
       if (!card.owner.equals(userId)) {
         throw new Forbidden('Вы не можете удалить данную карточку');
       }
-      return cardsModel.deleteOne({ _id: cardId });
+      cardsModel.deleteOne({ _id: cardId });
     })
     .then(({ deletedCount }) => {
       if (!deletedCount) {
@@ -45,9 +45,9 @@ const deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        return next(new NotFound('Карточка не найдена'));
+        next(new NotFound('Карточка не найдена'));
       }
-      return next(err);
+      next(err);
     });
 };
 
@@ -63,7 +63,6 @@ const putLikes = (req, res, next) => {
     { $addToSet: { likes: userId } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .orFail()
     .then((card) => {
       if (!card) {
         throw new NotFound('Карточка не найдена');
@@ -86,7 +85,6 @@ const deleteLike = (req, res, next) => {
     { $pull: { likes: userId } }, // убрать _id из массива
     { new: true },
   )
-    .orFail()
     .then((card) => {
       if (!card) {
         throw new NotFound('Карточка не найдена');
