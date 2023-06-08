@@ -18,11 +18,12 @@ const getUserById = (req, res, next) => {
       throw new NotFound('Пользователь не найден');
     })
     .then((user) => res.status(200).send(user))
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest('Пользователь с данным "_id" не найден'));
+        return next(new BadRequest('Пользователь с данным "_id" не найден'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -34,9 +35,9 @@ const getMyUser = (req, res, next) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest('Пользователь с данным "_id" не найден'));
+        return next(new BadRequest('Пользователь с данным "_id" не найден'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -60,11 +61,12 @@ const createUser = (req, res, next) => {
           if (err.name === 'ValidationError') {
             next(new BadRequest('Переданы некорректные данные'));
           } else if (err.code === 11000) {
-            next(new Conflict('Пользователь с таким Email уже существует'));
+            return next(new Conflict('Пользователь с таким Email уже существует'));
           }
-          next(new Error(err.message));
+          return next(new Error(err.message));
         });
-    });
+    })
+    .catch(next);
 };
 
 const loginUser = (req, res, next) => {
@@ -100,9 +102,9 @@ const updateAvatar = (req, res, next) => {
     .then((avatarUser) => res.send(avatarUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные'));
+        return next(new BadRequest('Переданы некорректные данные'));
       }
-      next(new Error(err.message));
+      return next(new Error(err.message));
     });
 };
 
@@ -116,9 +118,9 @@ const updateUser = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные'));
+        return next(new BadRequest('Переданы некорректные данные'));
       }
-      next(new Error(err.message));
+      return next(new Error(err.message));
     });
 };
 
