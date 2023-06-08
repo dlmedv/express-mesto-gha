@@ -1,7 +1,10 @@
 const router = require('express').Router();
 const cardsController = require('../controllers/cards');
 const {
-  validateCreateCard, validateDeleteCard, validateLikeCard, validateRemoveLikeCard,
+  validateCreateCard,
+  validateDeleteCard,
+  validateLikeCard,
+  validateRemoveLikeCard,
 } = require('../middlewares/validations');
 
 router.get('/cards', cardsController.getCards);

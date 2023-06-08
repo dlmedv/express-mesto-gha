@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const { isValidObjectId } = require('mongoose');
 const userModel = require('../models/user');
 const Conflict = require('../errors/Conflict');
 const NotFound = require('../errors/NotFound');
@@ -13,7 +14,13 @@ const getUsers = (req, res, next) => {
 };
 
 const getUserById = (req, res, next) => {
-  userModel.findById(req.params.userId)
+  const { userId } = req.params;
+
+  if (!isValidObjectId(userId)) {
+    throw new BadRequest('Переданы некорректные данные для получения данных пользователя');
+  }
+
+  userModel.findById(userId)
     .orFail(() => {
       throw new NotFound('Пользователь не найден');
     })
@@ -22,10 +29,19 @@ const getUserById = (req, res, next) => {
 };
 
 const getMyUser = (req, res, next) => {
-  userModel.findById(req.user._id)
-    .orFail(() => {
-      throw new NotFound('Пользователь не найден');
-    })
+  let userId;
+
+  if (req.params.id) {
+    userId = req.params.id;
+  } else {
+    userId = req.user._id;
+  }
+
+  if (!isValidObjectId(userId)) {
+    throw new BadRequest('Переданы некорректные данные для получения данных пользователя');
+  }
+  userModel.findById(userId)
+    .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
@@ -40,19 +56,26 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
 
-  bcrypt.hash(password, 10).then((hash) => {
-    userModel.create({
-      name, about, avatar, email, password: hash,
-    }).then((user) => res.status(201).send(user))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          next(new BadRequest('Переданы некорректные данные'));
-        } else if (err.code === 11000) {
-          next(new Conflict('Пользователь с таким Email уже существует'));
-        }
-        next(new Error(err.message));
-      });
-  });
+  bcrypt.hash(password, 10)
+    .then((hash) => {
+      userModel.create({
+        name, about, avatar, email, password: hash,
+      })
+        .then((user) => res.status(201).send({
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
+        }))
+        .catch((err) => {
+          if (err.name === 'ValidationError') {
+            next(new BadRequest('Переданы некорректные данные'));
+          } else if (err.code === 11000) {
+            next(new Conflict('Пользователь с таким Email уже существует'));
+          }
+          next(new Error(err.message));
+        });
+    });
 };
 
 const loginUser = (req, res, next) => {
