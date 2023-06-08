@@ -52,44 +52,31 @@ const deleteCard = (req, res, next) => {
 };
 
 const putLikes = (req, res, next) => {
-  const { cardId } = req.params;
-  const userId = req.user._id;
-
-  if (!isValidObjectId(userId) || !isValidObjectId(cardId)) {
-    throw new BadRequest('Переданы некорректные данные');
-  }
   cardsModel.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: userId } }, // добавить _id в массив, если его там нет
+    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
     .then((card) => {
       if (!card) {
         throw new NotFound('Карточка не найдена');
       }
-      return res.send(card.likes);
+      return res.send(card);
     })
     .catch(next);
 };
 
 const deleteLike = (req, res, next) => {
-  const { cardId } = req.params;
-  const userId = req.user._id;
-
-  if (!isValidObjectId(userId) || !isValidObjectId(cardId)) {
-    throw new BadRequest('Переданы некорректные данные');
-  }
-
   cardsModel.findByIdAndUpdate(
     req.params.cardId,
-    { $pull: { likes: userId } }, // убрать _id из массива
+    { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
     .then((card) => {
       if (!card) {
         throw new NotFound('Карточка не найдена');
       }
-      return res.send(card.likes);
+      return res.send(card);
     })
     .catch(next);
 };
